@@ -1,6 +1,3 @@
-# ATT FIXA
-# FRÅGA 1 LÄGGS IN 2 GÅNGER AV NÅN ALNEDNING
-
 from random import choice, shuffle
 
 
@@ -29,7 +26,10 @@ class Quiz:
     def askquestions(self):
         for y in self.questions:
             print(y.question)
-            y.write_alternatives()
+            n=0
+            for x in y.alternatives:
+                n+=1
+                print(f"{n}: {x}")
             answer=input("Write your answer :")
             if y.control_answer(answer)==1:
                 self.score+=1
@@ -37,6 +37,9 @@ class Quiz:
             else:
                 self.score-=1
                 print(f"You answered wrong :( , ur current score is  {self.score}")
+            print()
+
+
 
     def get_score(self):
         return self.score
@@ -44,18 +47,28 @@ class Quiz:
     def get_name(self):
         return self.name
 
-    def quiz_start(self): #BEh;ver g;ra klart
-        print(f"")
+    def quiz_start(self):
+        print(f"This is the best quiz ever and is called {self.name}.\n")
+        input("Press enter to start\n")
         
+def load_questions():
+    loaded=[]
+    with open("questions.txt","r", encoding="utf8") as f:
+        for line in f.readlines():
+            quest=line.split("/")
+            l=Question(quest[0],str(quest[1]),quest[2].split(","))
+            loaded.append(l)
+    return loaded
+
+# In the text file "questions.txt" you need to write "Question"/"which place the right answer is for example 3"/ answer 1, answer2 2, answer 3,
+# Divide each question with a diffrent line
+
         
 def main():
-        
-    question1=Question("How many people live in sweden?","10 million",["10 million","2 million"] )
-    question2=Question("How many sides does a cube have?","6",["6","4"])
     quiz=Quiz("Quiz",[] ,0)
-    quiz.questions.append(question1)
-    quiz.questions.append(question2)
+    quiz.questions.extend(load_questions())
     shuffle(quiz.questions)
+    quiz.quiz_start()
     quiz.askquestions()
     print(f"This is your end score: {quiz.get_score()}")
 
